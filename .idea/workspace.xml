@@ -4,20 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5cb8efb-3d5b-4e06-90a7-a52429d72ead" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/flappyBird.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/bird1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/bird2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/bird3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/imgs/pipe.png" afterDir="false" />
+    <list default="true" id="e5cb8efb-3d5b-4e06-90a7-a52429d72ead" name="Changes" comment="primeiro comite projeto flappyBird">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FlappyBird.py" beforeDir="false" afterPath="$PROJECT_DIR$/FlappyBird.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +21,12 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -76,6 +71,19 @@
       <option name="presentableId" value="Default" />
       <updated>1735841482455</updated>
     </task>
+    <task id="LOCAL-00001" summary="primeiro comite projeto flappyBird">
+      <option name="closed" value="true" />
+      <created>1736882577974</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1736882577974</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="primeiro comite projeto flappyBird" />
+    <option name="LAST_COMMIT_MESSAGE" value="primeiro comite projeto flappyBird" />
   </component>
 </project>

@@ -2,9 +2,10 @@ import pygame
 import os
 import random
 import sys
+import json
 
 # Constantes globais
-TELA_LARGURA = 500
+TELA_LARGURA = 800
 TELA_ALTURA = 800
 
 # Inicialização do pygame
@@ -13,7 +14,7 @@ pygame.init()
 # Carregar imagens
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bg.png')))
+IMAGEM_BACKGROUND = pygame.transform.scale(pygame.image.load(os.path.join('imgs', 'bg.png')), (TELA_LARGURA, TELA_ALTURA))
 IMAGENS_PASSARO = [
     pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird1.png'))),
     pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'bird2.png'))),
@@ -23,6 +24,9 @@ IMAGENS_PASSARO = [
 # fonte pontos
 pygame.font.init()
 FONTE_PONTOS = pygame.font.SysFont('arial', 50)
+FONTE_MENU = pygame.font.SysFont('arial', 30)
+
+JOGADORES = ['ALEX', 'ARTHUR']
 
 # Objetos do jogo
 class Passaro:
@@ -53,7 +57,7 @@ class Passaro:
         deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
 
         #restringir deslocamento
-        if deslocamento > 16:
+        if deslocamento > 16  :
             deslocamento = 16
         elif deslocamento < 0:
             deslocamento -= 2
@@ -80,12 +84,12 @@ class Passaro:
             self.imagem = self.IMGS[2]
         elif self.contagem_imagem < self.TEMPO_ANIMACAO * 4:
             self.imagem = self.IMGS[1]
-        elif self.contagem_imagem < self.TEMPO_ANIMACAO * 4 + 1:
+        elif self.contagem_imagem >= self.TEMPO_ANIMACAO * 4 + 1:
             self.imagem = self.IMGS[0]
             self.contagem_imagem = 0
 
         #quando passaro estiver caindo nao bater asa
-        if self.angulo <= 80:
+        if self.angulo <= -80:
             self.imagem = self.IMGS[1]
             self.contagem_imagem = self.TEMPO_ANIMACAO * 2
 
@@ -155,9 +159,9 @@ class Chao:
         self.x2 -= self.VELOCIDADE
 
         if self.x1 + self.LARGURA < 0:
-            self.x1 = self.x1 + self.LARGURA
+            self.x1 = self.x2 + self.LARGURA
         if self.x2 + self.LARGURA < 0:
-            self.x2 = self.x2 + self.LARGURA
+            self.x2 = self.x1 + self.LARGURA
 
     def desenhar(self, tela):
         tela.blit(self.IMAGEM, (self.x1, self.y))
@@ -175,15 +179,140 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     chao.desenhar(tela)
     pygame.display.update()
 
-def main():
+def salvar_pontuacao(jogador, pontos):
+    try:
+        with open('ranking.json', 'r') as f:
+            ranking = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        ranking = []
+
+    ranking.append({'Jogador': jogador, 'Pontos': pontos})
+    ranking = sorted(ranking, key=lambda x: x['Pontos'], reverse=True)[:10]
+
+    with open('ranking.json', 'w') as f:
+        json.dump(ranking, f)
+
+def mostrar_ranking(tela):
+    try:
+        with open('ranking.json', 'r') as f:
+            ranking = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        ranking = []
+
+    # Ordenar ranking
+    ranking = sorted(ranking, key=lambda x: x.get('pontos', 0), reverse=True)[:10]
+
+    tela.fill((0, 0, 0))
+    titulo = FONTE_MENU.render("RANKING PONTUAÇÕES", 1, (255, 255, 255))
+    tela.blit(titulo, (TELA_LARGURA // 2 - titulo.get_width() // 2, 50))
+
+    for i, entrada in enumerate(ranking):
+        jogador = entrada.get('Jogador', 'Desconhecido')
+        pontos = entrada.get('Pontos', 0)
+        texto = FONTE_MENU.render(f"{i + 1}. {jogador} - {pontos}", 1, (255, 255, 255))
+        tela.blit(texto, (TELA_LARGURA // 2 - texto.get_width() // 2, 100 + i * 30))
+
+    pygame.display.update()
+    pygame.time.wait(7000)
+
+def menu():
+    tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
+    #carregar img e redimensiona-la
+    IMAGEM_MENU = pygame.image.load(os.path.join('imgs', 'pygame_powered.png'))
+    nova_largura = TELA_LARGURA //2
+    proporcao = IMAGEM_MENU.get_height() / IMAGEM_MENU.get_width()
+    nova_altura = int(nova_largura * proporcao)
+    IMAGEM_MENU = pygame.transform.scale(IMAGEM_MENU, (nova_largura, nova_altura))
+
+    rodando =True
+    while rodando:
+        tela.fill((0, 0, 0))
+        tela.blit(IMAGEM_MENU, ((TELA_LARGURA - nova_largura) // 2, (TELA_ALTURA - nova_altura) // 2))
+
+        titulo = FONTE_MENU.render("Flappy Bird", 1, (255, 255, 255))
+        tela.blit(titulo, (TELA_LARGURA // 2 - titulo.get_width() // 2, 50))
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        jogar_texto = FONTE_MENU.render("JOGAR", 1, (255, 255, 255))
+        ranking_texto = FONTE_MENU.render("RANKING", 1, (255, 255, 255))
+
+        jogar_rect = jogar_texto.get_rect(center=(TELA_LARGURA // 2, 200))
+        ranking_rect = ranking_texto.get_rect(center=(TELA_LARGURA // 2, 300))
+
+        if jogar_rect.collidepoint(mouse_x, mouse_y):
+            jogar_texto = FONTE_MENU.render("JOGAR", 1, (255, 255, 0)) # Efeito hover
+        if ranking_rect.collidepoint(mouse_x, mouse_y):
+            ranking_texto = FONTE_MENU.render("RANKING", 1, (255, 255, 0)) # Efeito hover
+
+        tela.blit(jogar_texto, jogar_rect.topleft)
+        tela.blit(ranking_texto, ranking_rect.topleft)
+
+        pygame.display.update()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando = False
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if jogar_rect.collidepoint(mouse_x, mouse_y):
+                    selecionar_jogador()
+                elif ranking_rect.collidepoint(mouse_x, mouse_y):
+                    mostrar_ranking(tela)
+
+def selecionar_jogador():
+    tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
+    rodando = True
+    jogador_selecionado = None
+    while rodando:
+        tela.fill((0, 0,0))
+        titulo = FONTE_MENU.render("Selecione um jogador", 1, (255, 255, 255))
+        tela.blit(titulo, (TELA_LARGURA // 2 - titulo.get_width() // 2, 50))
+
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        alex_texto = FONTE_MENU.render("ALEX", 1, (255, 255, 255))
+        arthur_texto = FONTE_MENU.render("ARTHUR", 1, (255, 255, 255))
+
+        jogar_rect = alex_texto.get_rect(center=(TELA_LARGURA // 2, 200))
+        ranking_rect = arthur_texto.get_rect(center=(TELA_LARGURA // 2, 300))
+
+        if jogar_rect.collidepoint(mouse_x, mouse_y):
+            alex_texto = FONTE_MENU.render("ALEX", 1, (255, 255, 0))  # Efeito hover
+        if ranking_rect.collidepoint(mouse_x, mouse_y):
+            arthur_texto = FONTE_MENU.render("ARTHUR", 1, (255, 255, 0))  # Efeito hover
+
+        tela.blit(alex_texto, jogar_rect.topleft)
+        tela.blit(arthur_texto, ranking_rect.topleft)
+
+        pygame.display.update()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando = False
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if jogar_rect.collidepoint(mouse_x, mouse_y):
+                    jogador_selecionado = "ALEX"
+                    rodando = False
+                elif ranking_rect.collidepoint(mouse_x, mouse_y):
+                    jogador_selecionado = "ARTHUR"
+                    rodando = False
+
+    if jogador_selecionado:
+        main(jogador_selecionado)
+
+def main(jogador):
     passaros = [Passaro(230, 350)]
     chao = Chao(750)
     canos = [Cano(700)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
     relogio =pygame.time.Clock()
-
     rodando = True
+
     while rodando:
         relogio.tick(30)
 
@@ -195,8 +324,8 @@ def main():
                 sys.exit()
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame. K_SPACE:
-                    for passaro in passaros: # for para Ia
-                        passaro.pular() # Usar so esse se quiser criar so 1 passaro
+                    for passaro in passaros: # desenhar varios passaros para posteriormente criar IA que zera o jogo
+                        passaro.pular()
 
         # mover objetos
         for passaro in passaros:
@@ -208,6 +337,7 @@ def main():
         for cano in canos:
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
+                    salvar_pontuacao(jogador, pontos)
                     passaros.pop(i)
                     rodando = False
                     break
@@ -220,7 +350,7 @@ def main():
 
         if adicionar_cano:
             pontos += 1
-            canos.append(Cano(600))
+            canos.append(Cano(800))
         for cano in remover_canos:
             canos.remove(cano)
 
@@ -231,4 +361,4 @@ def main():
         desenhar_tela(tela, passaros, canos, chao, pontos)
 
 if __name__ == '__main__':
-    main()
+    menu()
