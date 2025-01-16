@@ -167,15 +167,19 @@ class Chao:
         tela.blit(self.IMAGEM, (self.x1, self.y))
         tela.blit(self.IMAGEM, (self.x2, self.y))
 
-def desenhar_tela(tela, passaros, canos, chao, pontos):
+def desenhar_tela(tela, passaros, canos, chao, pontos, level):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
     for passaro in passaros: # desenhar varios passaros para posteriormente criar IA que zera o jogo
         passaro.desenhar(tela)
     for canos in canos:
         canos.desenhar(tela)
 
-    texto = FONTE_PONTOS.render(f"pontuação: {pontos}", 1, (255, 255, 255))
-    tela.blit(texto, (TELA_LARGURA - 10 -texto.get_width(), 10))
+    texto_pontos = FONTE_PONTOS.render(f"pontuação: {pontos}", 1, (255, 255, 255))
+    tela.blit(texto_pontos, (TELA_LARGURA - 10 -texto_pontos.get_width(), 10))
+
+    texto_nivel = FONTE_PONTOS.render(f"Nível: {level}", 1, (255, 255, 255))
+    tela.blit(texto_nivel, (10, 10))
+
     chao.desenhar(tela)
     pygame.display.update()
 
@@ -199,12 +203,20 @@ def mostrar_ranking(tela):
     except (FileNotFoundError, json.JSONDecodeError):
         ranking = []
 
+    # carregar img e redimensiona-la
+    IMAGEM_MENU = pygame.image.load(os.path.join('imgs', 'pygame_powered.png'))
+    nova_largura = TELA_LARGURA // 2
+    proporcao = IMAGEM_MENU.get_height() / IMAGEM_MENU.get_width()
+    nova_altura = int(nova_largura * proporcao)
+    IMAGEM_MENU = pygame.transform.scale(IMAGEM_MENU, (nova_largura, nova_altura))
+
     # Ordenar ranking
     ranking = sorted(ranking, key=lambda x: x.get('pontos', 0), reverse=True)[:10]
 
     tela.fill((0, 0, 0))
-    titulo = FONTE_MENU.render("RANKING PONTUAÇÕES", 1, (255, 255, 255))
+    titulo = FONTE_MENU.render("RANKING PONTUAÇÕES", 1, (0, 255, 0))
     tela.blit(titulo, (TELA_LARGURA // 2 - titulo.get_width() // 2, 50))
+    tela.blit(IMAGEM_MENU, ((TELA_LARGURA - nova_largura) // 2, (TELA_ALTURA - nova_altura) // 2 + 100))
 
     for i, entrada in enumerate(ranking):
         jogador = entrada.get('Jogador', 'Desconhecido')
@@ -219,7 +231,7 @@ def menu():
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     #carregar img e redimensiona-la
     IMAGEM_MENU = pygame.image.load(os.path.join('imgs', 'pygame_powered.png'))
-    nova_largura = TELA_LARGURA //2
+    nova_largura = TELA_LARGURA // 2
     proporcao = IMAGEM_MENU.get_height() / IMAGEM_MENU.get_width()
     nova_altura = int(nova_largura * proporcao)
     IMAGEM_MENU = pygame.transform.scale(IMAGEM_MENU, (nova_largura, nova_altura))
@@ -229,13 +241,13 @@ def menu():
         tela.fill((0, 0, 0))
         tela.blit(IMAGEM_MENU, ((TELA_LARGURA - nova_largura) // 2, (TELA_ALTURA - nova_altura) // 2))
 
-        titulo = FONTE_MENU.render("Flappy Bird", 1, (255, 255, 255))
+        titulo = FONTE_MENU.render("Flappy Bird", 1, (0, 255, 0))
         tela.blit(titulo, (TELA_LARGURA // 2 - titulo.get_width() // 2, 50))
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
-        jogar_texto = FONTE_MENU.render("JOGAR", 1, (255, 255, 255))
-        ranking_texto = FONTE_MENU.render("RANKING", 1, (255, 255, 255))
+        jogar_texto = FONTE_MENU.render("JOGAR", 1, (0, 255, 0))
+        ranking_texto = FONTE_MENU.render("RANKING", 1, (0, 255, 0))
 
         jogar_rect = jogar_texto.get_rect(center=(TELA_LARGURA // 2, 200))
         ranking_rect = ranking_texto.get_rect(center=(TELA_LARGURA // 2, 300))
@@ -311,7 +323,10 @@ def main(jogador):
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
     relogio =pygame.time.Clock()
+    level = 1
+    velocidade = 5
     rodando = True
+
 
     while rodando:
         relogio.tick(30)
@@ -335,6 +350,8 @@ def main(jogador):
         adicionar_cano = False
         remover_canos = []
         for cano in canos:
+            cano.VELOCIDADE = velocidade # atualizar velocidade canos
+            chao.VELOCIDADE = velocidade # atualizar velocidade chao
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
                     salvar_pontuacao(jogador, pontos)
@@ -351,6 +368,11 @@ def main(jogador):
         if adicionar_cano:
             pontos += 1
             canos.append(Cano(800))
+            # incrementar nivel e velocidade a cada 10 pontos
+            if pontos % 10 == 0:
+                level += 1
+                velocidade += 1
+
         for cano in remover_canos:
             canos.remove(cano)
 
@@ -358,7 +380,7 @@ def main(jogador):
             if(passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
 
-        desenhar_tela(tela, passaros, canos, chao, pontos)
+        desenhar_tela(tela, passaros, canos, chao, pontos, level)
 
 if __name__ == '__main__':
     menu()
