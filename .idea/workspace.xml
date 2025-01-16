@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5cb8efb-3d5b-4e06-90a7-a52429d72ead" name="Changes" comment="segundo commit, adicionando ranking e menu">
+    <list default="true" id="e5cb8efb-3d5b-4e06-90a7-a52429d72ead" name="Changes" comment="terceiro commit, adicionando level">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FlappyBird.py" beforeDir="false" afterPath="$PROJECT_DIR$/FlappyBird.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ranking.json" beforeDir="false" afterPath="$PROJECT_DIR$/ranking.json" afterDir="false" />
@@ -88,12 +88,21 @@
       <option name="project" value="LOCAL" />
       <updated>1736981835132</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="terceiro commit, adicionando level">
+      <option name="closed" value="true" />
+      <created>1737050193618</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737050193618</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="primeiro comite projeto flappyBird" />
     <MESSAGE value="segundo commit, adicionando ranking e menu" />
-    <option name="LAST_COMMIT_MESSAGE" value="segundo commit, adicionando ranking e menu" />
+    <MESSAGE value="terceiro commit, adicionando level" />
+    <option name="LAST_COMMIT_MESSAGE" value="terceiro commit, adicionando level" />
   </component>
 </project>

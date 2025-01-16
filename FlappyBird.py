@@ -379,6 +379,9 @@ def main(jogador):
         for i, passaro in enumerate(passaros):
             if(passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
+                salvar_pontuacao(jogador, pontos)
+                rodando = False
+                break
 
         desenhar_tela(tela, passaros, canos, chao, pontos, level)
 
