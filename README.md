@@ -4,13 +4,15 @@ Projeto criado seguindo um tutorial do YouTube
 para aplicar conceitos de POO e ter o primeiro 
 contato com o framework Pygame.
 
-Fiz minhas próprias implementações além do tutorial 
-que foram a implementação de um Menu para a escolha 
-de jogador e visualização do ranking de pontuação, e 
-o arquivo em si para salvar a lista de pontuação.
+Fiz minhas próprias implementações no jogo para elevar o projeto a um novo nível:
 
-Apliquei também a incrementação de um level, que aumenta a
-velocidade do chão e canos a cada 10 pontos.
+Menu Interativo: Adicionei uma tela de menu simples que 
+permite a escolha de jogador e visualização do ranking 
+de pontuação. Também criei um sistema para salvar a 
+lista de pontuações em arquivo JSON.
+
+Sistema de Level Up: Implementei um sistema de níveis 
+que aumenta a velocidade do chão e dos canos a cada 10 pontos.
 
 ## Tecnologias Utilizadas
 
